@@ -1,3 +1,4 @@
+import { getTimers } from "@src/utils/timer";
 import type discord from "discord.js";
 import express from "express";
 import http from "http";
@@ -32,7 +33,7 @@ export default class RestAPIHandler {
       res.status(StatusCodes.OK).json({
         title: "Template Bot",
         version: version,
-        routes: { status: "/status" },
+        routes: { status: "/status", timers: "/timers" },
       })
     })
     this.express.get("/status", (_, res) => {
@@ -49,6 +50,11 @@ export default class RestAPIHandler {
         apiUptime: { seconds: process.uptime(), days: process.uptime() / 60 / 60 / 24 },
       }
       res.status(StatusCodes.OK).json(status);
+    });
+    this.express.get("/timers", (_, res) => {
+      res.status(StatusCodes.OK).json({
+        timers: Array.from(getTimers().keys()),
+      })
     });
 
     // Start Express Server
